@@ -10,7 +10,7 @@ author: "张俊"
 # 如何写go程序
 
 + go程序员倾向于把所有go代码放到一个工作空间(workspace)中;
-+ 工作空间可能包含多个版本控制仓库(如果git)目录；
++ 工作空间可能包含多个版本控制仓库(如git)目录；
 + 每个仓库包含一个或多个packages；
 + 每个package包含一个或多个位于同个目录的Go源文件；
 + package目录的路径决定了该package的导入路径(import path)；
@@ -19,18 +19,18 @@ go程序代码是按照package来组织的， 同一package可以包含多个源
 
 packge main比较特殊， 编译后生成可执行程序； 其它package，编译后生成可链接的静态库(*.a)。
 
-go工具提供了一种标准的获取,构建(build),安装package(包括可执行程序)的方法， 它是为开发保存在公共代码库的程序而设计的，要求代码按照一种特殊的目录结构和约定进行组织.
+go工具提供了一种标准的获取、构建(build)、安装package(包括可执行程序)的方法，它要求代码按照一种特殊的目录结构和约定进行组织.
 
 # 工作空间(workspace)
 
-  工作空间是包含下面三个子目录的目录：
+工作空间是包含下面三个子目录的目录：
 
-  | 子目录 | 功能                                                          |
-  | ------ | ------------------------------------------------------------- |
-  | src    | 包含所有组织成packages的Go源文件，每个子目录只能有一个package。   |
-  | pkg    | 包含编译后生存的package二进制对象。                           |
-  | bin    | 包含可执行二进制文件                                          |
-  | ------ | ------------------------------------------------------------- |
+| 子目录 | 功能                                                          |
+| ------ | ------------------------------------------------------------- |
+| src    | 包含所有组织成packages的Go源文件，每个子目录只能有一个package。   |
+| pkg    | 包含编译后生存的package二进制对象。                           |
+| bin    | 包含可执行二进制文件                                          |
+| ------ | ------------------------------------------------------------- |
 
 go工具构建源程序，将生成的二进制文件安装到pkg或bin目录；
 
@@ -61,7 +61,7 @@ golang开发者一般只配置一个workspace， 通过项目路径(如示例中
 
 # GOPATH和PATH
 
-  GOPATH环境变量用于指定workspace的位置，多个workspac1用冒号分割。通常需要将各workspace下的bin目录加到PATH中。
+  GOPATH环境变量用于指定workspace的位置，多个workspace用冒号分割。通常需要将各workspace下的bin目录加到PATH中。
 
 ``` bash
 $ mkdir $HOME/work
@@ -73,34 +73,37 @@ $ export PATH=$PATH:$GOPATH/bin
 
 在import package或使用go工具编译package的时候，需要指定package path。
 
-+ 标准库提供的packages，导入路径可以使用简写如"fmt"和"net/http", 它们是相对于$GOROOT/pkg/$GOOS_$GOARCH目录的。
-+ 自己写的packages，导入路径不能和标准库或第三库的导入路径冲突，所以需要选择一个相对于$GOPATH/src的路径作为代码的package path。
++ 标准库提供的packages：导入路径可以使用简写如"fmt"和"net/http", 它们是相对于$GOROOT/pkg/$GOOS_$GOARCH目录的。
++ 自己写的packages：导入路径不能和标准库或第三库的导入路径冲突，所以需要选择一个相对于$GOPATH/src的路径作为代码的package path。
 
-一般情况下将代码仓库的URL作为项目的base path，如 github.com/user。base path + package_name才是import使用的package path。
+一般情况下将代码仓库的URL作为项目的base path，如 github.com/user。
+
+base path + package_name才是import使用的package path。
 
 # 开发程序
 
 1. 建立workspace，设置环境变量$GOPATH和$PATH:
 
-``` bash
-$ mkdir -p $HOME/go/{src,pkg,bin}
-$ export GOPATH=$HOME/go/
-$ export PATH=$GOPATH/bin:$PATH
-```
+  ``` bash
+  $ mkdir -p $HOME/go/{src,pkg,bin}
+  $ export GOPATH=$HOME/go/
+  $ export PATH=$GOPATH/bin:$PATH
+  ```
 
 2. 设置一个base path，一般为代码仓库URL:
 
-```  bash
-$ mkdir -p $HOME/src/github.com/golang
-```
+  ```  bash
+  $ mkdir -p $HOME/src/github.com/golang
+  ```
 
 3. 在base path下面开发各个packages，每个package一个子目录
 
-``` bash
-$ mkdir -p $HOME/src/github.com/golang/{song,decode,encode,mixer}
-```
+  ``` bash
+  $ mkdir -p $HOME/src/github.com/golang/{song,decode,encode,mixer}
+  ```
 
 ## 可执行程序
+
 例如：
 
 ``` bashsh
@@ -124,8 +127,7 @@ func main() {
 $ go install github.com/user/hello #第三个参数为package path
 ```
 
-注意，可以在任何目录执行上面命令，go工具会在$GOPATH中的各workspace中查找上面的package path。
-还可以切换到package path目录，直接执行go install命令：
+注意，可以在任何目录执行上面命令，go工具会在$GOPATH中的各workspace中查找上面的package path。还可以切换到package path目录，直接执行go install命令：
 
 ``` bash
 $ cd $GOPATH/src/github.com/user/hello
@@ -213,4 +215,4 @@ go get命令会自动下载、构建和安装相应仓库的packages， 默认�
 
 # 参考
 
-(How to Write Go Code)[http://golang.org/doc/code.html]
+1. (How to Write Go Code)[http://golang.org/doc/code.html]
