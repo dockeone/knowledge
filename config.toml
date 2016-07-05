@@ -31,7 +31,7 @@ RSSUri = "feed.xml"
     ShortName = "coderzh"
 
   [Params.GoogleAnalytics]
-    ID = "UA-10147768-2"
+    ID = "UA-79732341-1"
 
   [Params.Strings]
     Search = "搜索"

@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OPSNULL</title>
+    <link>http://opsnull.com/</link>
+    <description>Recent content on OPSNULL</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 21 Jun 2016 22:52:18 -0400</lastBuildDate>
+    <atom:link href="http://opsnull.com/feed/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>go安装和测试</title>
+      <link>http://opsnull.com/post/golang/install/</link>
+      <pubDate>Tue, 21 Jun 2016 22:52:18 -0400</pubDate>
+      
+      <guid>http://opsnull.com/post/golang/install/</guid>
+      <description>
+
+&lt;h1 id=&#34;工具链介绍:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;工具链介绍&lt;/h1&gt;
+
+&lt;p&gt;go有两套编译工具链，分别是从plant9移植过来的gc和依赖gcc的gccgo。&lt;/p&gt;
+
+&lt;p&gt;官方为gc工具链提供了二进制安装包和源码， 可以根据需要选择一种安装方式。gc工具链对操作系统和CPU类型的支持情况如下：&lt;/p&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;操作系统&lt;/th&gt;
+&lt;th&gt;CPU类型&lt;/th&gt;
+&lt;th&gt;备注&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;FreeBSD 8 or later&lt;/td&gt;
+&lt;td&gt;amd64, 386, arm&lt;/td&gt;
+&lt;td&gt;Debian GNU/kFreeBSD not supported; FreeBSD/ARM needs FreeBSD 10 or later&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;Linux 2.6.23 or later with glibc&lt;/td&gt;
+&lt;td&gt;amd64, 386, arm&lt;/td&gt;
+&lt;td&gt;CentOS/RHEL 5.x not supported; no binary distribution for ARM yet&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;Mac OS X 10.6 or later&lt;/td&gt;
+&lt;td&gt;amd64, 386&lt;/td&gt;
+&lt;td&gt;use the gcc** that comes with Xcode**&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;Windows XP or later&lt;/td&gt;
+&lt;td&gt;amd64, 386&lt;/td&gt;
+&lt;td&gt;use MinGW gcc. No need for cygwin or msys.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;对于其它操作系统或CPU类型，需要从源码编译gc工具链或使用gccgo。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果使用cgo，则需要安装gcc;&lt;/li&gt;
+&lt;li&gt;Xcode command tool是Xcode的一部分，它包含gcc编译器, 可以从Xcode的Componts-&amp;gt;Downloads对话框中下载该tool。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;安装:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;安装&lt;/h1&gt;
+
+&lt;h2 id=&#34;二进制安装:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;二进制安装&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;从&lt;a href=&#34;https://golang.org/dl/&#34;&gt;官网&lt;/a&gt;下载二进制包如&lt;em&gt;go1.6.linux-amd64.tar.gz&lt;/em&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;解压到&lt;code&gt;/usr/local&lt;/code&gt;目录：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ tar -C /usr/local -xzf go$VERSION.$GOOS-$GOARCH.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;将/usr/local/go/bin添加到PATH中：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ export PATH=$PATH:/usr/local/go/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;go默认假设被安装到/usr/loca/go，如果被安装到其它位置，则需要设置GOROOT环境变量。例如，二进制包被解压到$HOME目录，则设置如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ export GOROOT=$HOME/go
+$ export PATH=$PATH:$GOROOT/bin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意：只有当将go安装到非/usr/local目录时才需要设置GOROOT变量。&lt;/p&gt;
+
+&lt;h2 id=&#34;从源码编译安装:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;从源码编译安装&lt;/h2&gt;
+
+&lt;h3 id=&#34;安装go编译器二进制文件:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;安装Go编译器二进制文件&lt;/h3&gt;
+
+&lt;p&gt;1.4版本后的Go工具链是用go语言写的，如果要构建它，系统需要安装Go编译器：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;如果系统已经有&amp;gt;= 1.4版本的go工具链，则将&lt;code&gt;GOROOT_BOOTSTRAP&lt;/code&gt;变量设置为所在目录；&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ unset GOROOT GOPATH  #如果系统已经有go工具链，需要清除`$GOPATH`和`$GOROOT`变量；
+$ export GOROOT_BOOTSTRAP=$HOME/local/go
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;否则，需要下载1.4版本的go工具链，该版本是C写的，只依赖gcc和glibc；可以下载二进制或编译并安装源码，然后将&lt;code&gt;GOROOT_BOOTSTRAP&lt;/code&gt;变量设置为所在目录；&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd /tmp
+$ git clone git@github.com:golang/go.git
+$ cd go
+$ git checkout -b 1.4.3 go1.4.3
+$ cd src
+$ ./all.bash  #编译go 1.4.3
+$ export GOROOT_BOOTSTRAP=/tmp/go/go  #GOROOT\_BOOTSTRAP缺省值为`$HOME/go1.4`，如果安装到其它位置，则需要重新定义；
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;使用GOROOT_BOOTSTRAP变量指定Go工具链位置(如果位于$HOME/go1.4，则无需指定)后，可以执行源码中的&lt;code&gt;bootstrap.bash&lt;/code&gt;脚本，生成支持&lt;code&gt;$GOOS&lt;/code&gt;、&lt;code&gt;$GOARCH&lt;/code&gt;指定的目标操作系统和架构的新工具链：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ GOOS=linux GOARCH=ppc64 ./bootstrap.bash
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;该命令生成的工具链位于&lt;code&gt;../../go-${GOOS}-${GOARCH}-bootstrap.&lt;/code&gt;目录，可以设置为变量&lt;code&gt;GOROOT_BOOTSTRAP&lt;/code&gt;的值，用于后续编译源码；&lt;/p&gt;
+
+&lt;h3 id=&#34;编译最新的go源码:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;编译最新的go源码&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;设置git代理：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ git config http.proxy http://user:passwd@host:port
+$ git config https.proxy https://user:passwd@host:port
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;设置go get代理&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ export http_proxy=http://user:passwd@host:port
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;获取源代码：&lt;/p&gt;
+
+&lt;p&gt;直接下载或者从git仓库clone。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;从&lt;a href=&#34;https://golang.org/dl&#34;&gt;官网&lt;/a&gt;下载&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;  $ wget https://golang.org/dl/go$VERSION.src.tar.gz
+  $ tar -xzvf go$VERSION.$OS-$ARCH.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;从git代码库clone：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;  $ git clone https://go.googlesource.com/go #需翻墙
+  $ git clone https://github.com/golang/go.git
+  $ cd go
+  $ git checkout go1.6 #也可以切换到其它分支如master
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;编译源代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ pwd
+/tmp/
+$ cd go/src
+$ ./all.bash  #使用`GOROOT_BOOTSTRAP`指定的go 1.4版本以上的工具链来编译go源码
+...
+ALL TESTS PASSED
+
+
+---
+Installed Go for linux/amd64 in /tmp/go
+Installed commands in /tmp/go/bin
+*** You need to add /tmp/go/bin to your PATH.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;go 会将安装位置记录到二进制的&lt;code&gt;GOROOT&lt;/code&gt;变量中，如果需要调整安装目录，可以设置&lt;code&gt;$GOROOT_FINAL=/path/to/goTree&lt;/code&gt;, 这样编译完后会提示将&lt;code&gt;/tmp/go&lt;/code&gt;移动到
+&lt;code&gt;/path/to/goTree&lt;/code&gt;目录(这个参数只能在编译阶段有效，如果在编译后移动Go tree则参考步骤5)。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls /tmp/go -F
+api/  AUTHORS  bin/  CONTRIBUTORS  doc/  favicon.ico  include/  lib/
+LICENSE  misc/  PATENTS  pkg/  README  robots.txt  src/  test/  VERSION
+
+
+$ ls /tmp/go/bin  #源码包自带的二进制工具命令， 没有 godoc
+go  gofmt
+
+
+$ ls /tmp/go/pkg/tool/linux_amd64/
+addr2line  asm  cgo  compile  dist  doc  fix  link  nm  objdump  pack  pprof  tour yacc
+
+
+$ /tmp/go/bin/go env |grep -E &#39;GOROOT|GOTOOLDIR&#39;
+GOROOT=&amp;quot;/tmp/go&amp;quot;   #可见Go tree被安装到预期位置
+GOTOOLDIR=&amp;quot;/tmp/go/pkg/tool/linux_amd64&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将&lt;code&gt;/tmp/go/bin&lt;/code&gt;加入到PATH中，即可使用。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;移动 Go 源码目录&lt;/p&gt;
+
+&lt;p&gt;可以将编译过的Go Tree移动到其它目录，然后修改&lt;code&gt;GOROOT&lt;/code&gt;环境变量即可。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir /tmp/xxx
+$ export GOROOT=/tmp/xxx
+$ mv * /tmp/xxx
+$ /tmp/xxx/bin/go env |grep -E &#39;GOROOT|GOTOOLDIR&#39;
+GOROOT=&amp;quot;/tmp/xxx&amp;quot; #Go tree和工具链自动调整
+GOTOOLDIR=&amp;quot;/tmp/xxx/pkg/tool/linux_amd64&amp;quot;
+
+
+#设置PATH和GOPATH
+$ export PATH=/tmp/xxx/bin:$PATH
+$ which go
+/tmp/xxx/bin/go
+$ go version
+go version go1.4 linux/amd64
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;安装额外的工具如&lt;code&gt;godoc&lt;/code&gt;, &lt;code&gt;vet&lt;/code&gt;, &lt;code&gt;cover&lt;/code&gt;(二进制发布版中包含这些工具，无需额外安装)：&lt;/p&gt;
+
+&lt;p&gt;一些Go工具位于&lt;a href=&#34;https://golang.org/x/tools&#34;&gt;go.tools&lt;/a&gt;仓库中，需要额外安装。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ #安装所有工具：
+$ go get golang.org/x/tools/cmd/... #...是通配符，参考： go help packages
+
+
+$ go get golang.org/x/tools/cmd/godoc #只安装godoc工具
+$ ls bin/ #多了godoc
+go  godoc  gofmt
+$ ls pkg/tool/linux_amd64/ #多了vet,cover
+addr2line  asm  cgo  compile  cover  dist  doc  fix  link  nm  objdump  pack  pprof  tour  trace  vet  yacc
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;go 命令会将&lt;code&gt;godoc&lt;/code&gt;安装到&lt;code&gt;$GOROOT/bin&lt;/code&gt;或者&lt;code&gt;$GOBIN&lt;/code&gt;，其它的&lt;code&gt;go tool&lt;/code&gt;如&lt;code&gt;cover&lt;/code&gt;、&lt;code&gt;vet&lt;/code&gt;安装到&lt;code&gt;$GOROOT/pkg/tool/$GOOS_$GOARCH&lt;/code&gt;。可以用&lt;code&gt;go tool cover&lt;/code&gt;或&lt;code&gt;go tool vet&lt;/code&gt;命令来调用后面目录中的程序。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&#34;工具链测试:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;工具链测试&lt;/h1&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;创建和设置GOPATH(非必须):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir -p $HOME/go/{src,bin,pkg}
+$ export GOPATH=$HOME/go
+$ mkdir $HOME/go/src/demo
+$ cd !$
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;编写一个测试文件如 hello.go&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;package main
+
+
+import &amp;quot;fmt&amp;quot;
+
+
+func main() {
+  fmt.Printf(&amp;quot;hello, world\n&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;编译并执行， -x选项可以打印出编译过程&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go build -x demo.go
+WORK=/tmp/go-build333633893
+mkdir -p $WORK/command-line-arguments/_obj/
+mkdir -p $WORK/command-line-arguments/_obj/exe/
+cd /home/ksyun/golang/src
+/home/ksyun/local/go/pkg/tool/linux_amd64/compile -o $WORK/command-line-arguments.a -trimpath $WORK -p main -complete -buildid ed5feda32ea5b5ab51ac7fe9d1193005f6f99836 -D _/home/ksyun/golang/src -I $WORK -pack ./demo.go
+cd .
+/home/ksyun/local/go/pkg/tool/linux_amd64/link -o $WORK/command-line-arguments/_obj/exe/a.out -L $WORK -extld=gcc -buildmode=exe -buildid=ed5feda32ea5b5ab51ac7fe9d1193005f6f99836 $WORK/command-line-arguments.a
+mv $WORK/command-line-arguments/_obj/exe/a.out demo
+hello, world
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&#34;环境变量-可选:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;环境变量(可选)&lt;/h1&gt;
+
+&lt;p&gt;编译工具链可以使用以下环境变量进行配置；&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;$GOROOT&lt;/code&gt;
+构建时，值为&lt;code&gt;all.bash&lt;/code&gt;脚本所在目录的父目录，会被写入到生成的二进制中；如果后续移动了安装目录，则使用该变量指定新的Go Tree顶层目录；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;$GOROOT_FINAL&lt;/code&gt;
+一般和&lt;code&gt;$GOROOT&lt;/code&gt;一致，定义在构建后的安装阶段安装到的位置；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;$GOOS&lt;/code&gt;和&lt;code&gt;$GOARCH&lt;/code&gt;
+交叉编译时，分别定义目标操作系统和体系结构，默认和&lt;code&gt;$GOHOSTOS&lt;/code&gt;和&lt;code&gt;$GOHOSTARCH&lt;/code&gt;一致。各组合如下:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$GOOS    $GOARCH
+android    arm
+darwin    386
+darwin    amd64
+darwin    arm
+darwin    arm64
+dragonfly    amd64
+freebsd    386
+freebsd    amd64
+freebsd    arm
+linux    386
+linux    amd64
+linux    arm
+linux    arm64
+linux    ppc64
+linux    ppc64le
+linux    mips64
+linux    mips64le
+netbsd    386
+netbsd    amd64
+netbsd    arm
+openbsd    386
+openbsd    amd64
+openbsd    arm
+plan9    386
+plan9    amd64
+solaris    amd64
+windows    386
+windows    amd64
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;$ #交叉编译
+$ GOOS=windows GOARCH=amd64 go build
+$ file pssh.exe
+pssh.exe: PE32+ executable for MS Windows (console) Mono/.Net assembly
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;$GOHOSTOS&lt;/code&gt;和&lt;code&gt;$GOHOSTARCH&lt;/code&gt;
+编译工具链所在主机的操作系统和架构类型，必须与所在操作系统和CPU架构类型兼容；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;$GOBIN&lt;/code&gt;
+如果设置，则所有的Go二进制程序将安装到此目录，而不是默认的&lt;code&gt;$GOPATH/bin&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;参考:ee40007639ba1d9861b5cc3e7ade0aef&#34;&gt;参考&lt;/h1&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://golang.org/doc/install&#34;&gt;Getting Started&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://golang.org/doc/install/source&#34;&gt;Installing Go from source&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
