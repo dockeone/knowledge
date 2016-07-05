@@ -6,8 +6,228 @@
     <description>Recent content on OPSNULL</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 21 Jun 2016 22:52:18 -0400</lastBuildDate>
+    <lastBuildDate>Tue, 05 Jul 2016 20:33:18 -0400</lastBuildDate>
     <atom:link href="http://opsnull.com/feed/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>如何写go程序</title>
+      <link>http://opsnull.com/post/golang/code/</link>
+      <pubDate>Tue, 05 Jul 2016 20:33:18 -0400</pubDate>
+      
+      <guid>http://opsnull.com/post/golang/code/</guid>
+      <description>
+
+&lt;h1 id=&#34;如何写go程序:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;如何写go程序&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;go程序员倾向于把所有go代码放到一个工作空间(workspace)中;&lt;/li&gt;
+&lt;li&gt;工作空间可能包含多个版本控制仓库(如果git)目录；&lt;/li&gt;
+&lt;li&gt;每个仓库包含一个或多个packages；&lt;/li&gt;
+&lt;li&gt;每个package包含一个或多个位于同个目录的Go源文件；&lt;/li&gt;
+&lt;li&gt;package目录的路径决定了该package的导入路径(import path)；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;go程序代码是按照package来组织的， 同一package可以包含多个源文件。&lt;/p&gt;
+
+&lt;p&gt;packge main比较特殊， 编译后生成可执行程序； 其它package，编译后生成可链接的静态库(*.a)。&lt;/p&gt;
+
+&lt;p&gt;go工具提供了一种标准的获取,构建(build),安装package(包括可执行程序)的方法， 它是为开发保存在公共代码库的程序而设计的，要求代码按照一种特殊的目录结构和约定进行组织.&lt;/p&gt;
+
+&lt;h1 id=&#34;工作空间-workspace:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;工作空间(workspace)&lt;/h1&gt;
+
+&lt;p&gt;工作空间是包含下面三个子目录的目录：&lt;/p&gt;
+
+&lt;p&gt;| 子目录 | 功能                                                          |
+  | &amp;mdash;&amp;mdash; | &amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;- |
+  | src    | 包含所有组织成packages的Go源文件，每个子目录只能有一个package。   |
+  | pkg    | 包含编译后生存的package二进制对象。                           |
+  | bin    | 包含可执行二进制文件                                          |
+  | &amp;mdash;&amp;mdash; | &amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;- |&lt;/p&gt;
+
+&lt;p&gt;go工具构建源程序，将生成的二进制文件安装到pkg或bin目录；&lt;/p&gt;
+
+&lt;p&gt;示例如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;  bin/
+    hello                          # command executable
+    outyet                         # command executable
+  pkg/
+    linux_amd64/
+        github.com/golang/example/
+            stringutil.a           # package object
+  src/
+    github.com/golang/example/ #项目目录，包含多个packages
+        .git/
+	    hello/                     #package hello， 命令
+	        hello.go
+	    outyet/                    #package outyet， 命令
+	        main.go
+	        main_test.go
+	    stringutil/                #package stringutil， 函数库
+	        reverse.go
+	        reverse_test.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;golang开发者一般只配置一个workspace， 通过项目路径(如示例中的github.com/golang/example/)来划分各packages。&lt;/p&gt;
+
+&lt;h1 id=&#34;gopath和path:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;GOPATH和PATH&lt;/h1&gt;
+
+&lt;p&gt;GOPATH环境变量用于指定workspace的位置，多个workspac1用冒号分割。通常需要将各workspace下的bin目录加到PATH中。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir $HOME/work
+$ export GOPATH=$HOME/work
+$ export PATH=$PATH:$GOPATH/bin
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;导入路径-import-path:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;导入路径(import path)&lt;/h1&gt;
+
+&lt;p&gt;在import package或使用go工具编译package的时候，需要指定package path。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;标准库提供的packages，导入路径可以使用简写如&amp;rdquo;fmt&amp;rdquo;和&amp;rdquo;net/http&amp;rdquo;, 它们是相对于$GOROOT/pkg/$GOOS_$GOARCH目录的。&lt;/li&gt;
+&lt;li&gt;自己写的packages，导入路径不能和标准库或第三库的导入路径冲突，所以需要选择一个相对于$GOPATH/src的路径作为代码的package path。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一般情况下将代码仓库的URL作为项目的base path，如 github.com/user。base path + package_name才是import使用的package path。&lt;/p&gt;
+
+&lt;h1 id=&#34;开发程序:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;开发程序&lt;/h1&gt;
+
+&lt;ol&gt;
+&lt;li&gt;建立workspace，设置环境变量$GOPATH和$PATH:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir -p $HOME/go/{src,pkg,bin}
+$ export GOPATH=$HOME/go/
+$ export PATH=$GOPATH/bin:$PATH
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ol&gt;
+&lt;li&gt;设置一个base path，一般为代码仓库URL:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir -p $HOME/src/github.com/golang
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ol&gt;
+&lt;li&gt;在base path下面开发各个packages，每个package一个子目录&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir -p $HOME/src/github.com/golang/{song,decode,encode,mixer}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;可执行程序:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;可执行程序&lt;/h2&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bashsh&#34;&gt;$ mkdir $GOPATH/src/github.com/user/hello # hello main package
+$ cat $GOPATH/src/github.com/user/hello/hello.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
+
+import &amp;quot;fmt&amp;quot;
+
+func main() {
+  fmt.Printf(&amp;quot;Hello, world.\n&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用go工具来构建(build)和安装(install)该package：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go install github.com/user/hello #第三个参数为package path
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意，可以在任何目录执行上面命令，go工具会在$GOPATH中的各workspace中查找上面的package path。
+还可以切换到package path目录，直接执行go install命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd $GOPATH/src/github.com/user/hello
+$ go install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;go install命令 先构建hello程序，然后安装到$GOPATH/bin目录中， 如果该目录在PATH中，则可以直接执行生成的命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ hello
+Hello, world.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;函数库:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;函数库&lt;/h1&gt;
+
+&lt;p&gt;开发函数库的方法和可执行程序类似，区别在于：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;package name不是main。&lt;/li&gt;
+&lt;li&gt;go build不会生成任何文件，只做语法检查。&lt;/li&gt;
+&lt;li&gt;go install会将构建的函数库安装到$GOPATH/pkg/$GOOS_GOARCH目录下相应的package path中。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;如果package main的代码导入了该函数库package，那么：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;执行 go build会在当前目录生成可执行程序，但不会安装函数库。&lt;/li&gt;
+&lt;li&gt;执行 go install会安装该可执行程序的同时安装它依赖的函数库。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&#34;包名称:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;包名称&lt;/h1&gt;
+
+&lt;p&gt;每个package path下的所有go源文件只能属于一个package(用于测试的*_test.go源文件例外)。&lt;/p&gt;
+
+&lt;p&gt;package path用来查找各packages， 源文件中的package name语句决定了该package被import后使用的限定前缀。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;例如demo.go中声明package demo，则其它package import该demo的packge path后，使用的限定前缀是demo，而不管package path最后
+一级目录是什么。&lt;/p&gt;
+
+&lt;p&gt;golang的惯例是package name与该package所在的目录名称一致，即与package path的最后一级目录名称一致，例如 package path为&amp;rdquo;test/demo&amp;rdquo;
+时，test/demo下所有go文件中的name应该为dmeo。两者不一致也是允许的，以package name为准，但这样在看代码时就不好确定限定前缀来源
+于哪个package path。&lt;/p&gt;
+
+&lt;p&gt;各packages可以含有相同的限定前缀，只要它们的import path(package path)不同即可。&lt;/p&gt;
+
+&lt;h1 id=&#34;测试:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;测试&lt;/h1&gt;
+
+&lt;p&gt;go test工具和testing package组成一个轻量级的测试框架。&lt;/p&gt;
+
+&lt;p&gt;test文件以_test.go结尾，和被测试文件放在同一个目录下。test文件可以和所测试的文件属于同一个package，也可以按惯例命名为package_test。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package stringutil //或者package stringutil_test
+
+import &amp;quot;testing&amp;quot;
+
+func TestReverse(t *testing.T) {
+cases := []struct {
+  in, want string
+}{
+  {&amp;quot;Hello, world&amp;quot;, &amp;quot;dlrow ,olleH&amp;quot;},
+  {&amp;quot;Hello, 世界&amp;quot;, &amp;quot;界世 ,olleH&amp;quot;},
+  {&amp;quot;&amp;quot;, &amp;quot;&amp;quot;},
+}
+for _, c := range cases {
+  got := Reverse(c.in)
+  if got != c.want {
+    t.Errorf(&amp;quot;Reverse(%q) == %q, want %q&amp;quot;, c.in, got, c.want)
+  }
+}
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;运行go test命令:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;$ go test github.com/user/stringutil
+ok  	github.com/user/stringutil 0.165s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;远程包:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;远程包&lt;/h1&gt;
+
+&lt;p&gt;如果代码中import path在当前workspace中不存在，则go工具会尝试利用git或hg从远程仓库下载。
+go get命令会自动下载、构建和安装相应仓库的packages， 默认会安装到$GOPATH中第一个workspace。&lt;/p&gt;
+
+&lt;h1 id=&#34;参考:cb7f612e17aad7eb26c06709ef92a867&#34;&gt;参考&lt;/h1&gt;
+
+&lt;p&gt;(How to Write Go Code)[&lt;a href=&#34;http://golang.org/doc/code.html&#34;&gt;http://golang.org/doc/code.html&lt;/a&gt;]&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>go安装和测试</title>
