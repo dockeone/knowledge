@@ -12,9 +12,9 @@ RSSUri = "feed.xml"
 
 [Params]
   AuthorHomepage = "http://opsnull.com"
-  BottomIntroduce = "热爱生活<br/>热爱技术"
+  BottomIntroduce = "热爱生活,<br/>热爱技术!"
   Description = ""
-  Subtitle = "No Oops"
+  Subtitle = "学习、感悟、分享！"
   Weibo = "geekard"
   Twitter = "geekard"
   GitHub = "opsnull"
@@ -50,6 +50,7 @@ RSSUri = "feed.xml"
     Name = "首页"
     URL = "/"
     Weight = 1
+
   [[Menu.Main]]
     Name = "关于"
     URL = "/about"
