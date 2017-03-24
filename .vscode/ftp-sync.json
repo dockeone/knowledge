@@ -1,0 +1,21 @@
+{
+    "remotePath": "/home/geekard/blog.opsnull.com/",
+    "host": "opsnull.com",
+    "username": "root",
+    "password": "ho4o46@opsnull",
+    "port": 22,
+    "secure": true,
+    "protocol": "sftp",
+    "uploadOnSave": false,
+    "passive": false,
+    "debug": true,
+    "privateKeyPath": null,
+    "passphrase": null,
+    "ignore": [
+        "\\.vscode",
+        "\\.git",
+        "\\.DS_Store",
+        "*.bak",
+        "*.gz"
+    ]
+}

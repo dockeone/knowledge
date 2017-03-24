@@ -1,13 +1,13 @@
 ---
-date: 2016-07-05T20:33:18-04:00
-title: 如何写go程序
-categories: ["golang"]
+title: Go程序开发示例
+description: Go程序开发示例
+date: 2017-03-21T22:52:18-04:00
+categories: ["golang", "技术"]
 tags: ["golang"]
 toc: true
 author: "张俊"
+isCJKLanguage: true
 ---
-
-# 如何写go程序
 
 + go程序员倾向于把所有go代码放到一个工作空间(workspace)中;
 + 工作空间可能包含多个版本控制仓库(如git)目录；
@@ -16,12 +16,11 @@ author: "张俊"
 + package目录的路径决定了该package的导入路径(import path)；
 
 go程序代码是按照package来组织的， 同一package可以包含多个源文件。
-
 packge main比较特殊， 编译后生成可执行程序； 其它package，编译后生成可链接的静态库(*.a)。
 
 go工具提供了一种标准的获取、构建(build)、安装package(包括可执行程序)的方法，它要求代码按照一种特殊的目录结构和约定进行组织.
 
-# 工作空间(workspace)
+## 工作空间(workspace)
 
 工作空间是包含下面三个子目录的目录：
 
@@ -47,7 +46,7 @@ go工具构建源程序，将生成的二进制文件安装到pkg或bin目录；
   src/
     github.com/golang/example/ #项目目录，包含多个packages
         .git/
-	    hello/                     #package hello， 命令
+          hello/                     #package hello， 命令
 	        hello.go
 	    outyet/                    #package outyet， 命令
 	        main.go
@@ -59,17 +58,18 @@ go工具构建源程序，将生成的二进制文件安装到pkg或bin目录；
 
 golang开发者一般只配置一个workspace， 通过项目路径(如示例中的github.com/golang/example/)来划分各packages。
 
-# GOPATH和PATH
+## GOPATH和PATH
 
-  GOPATH环境变量用于指定workspace的位置，多个workspace用冒号分割。通常需要将各workspace下的bin目录加到PATH中。
+GOPATH环境变量用于指定workspace的位置，多个workspace用冒号分割。通常需要将各workspace下的bin目录加到PATH中。
 
 ``` bash
 $ mkdir $HOME/work
 $ export GOPATH=$HOME/work
 $ export PATH=$PATH:$GOPATH/bin
+$
 ```
 
-# 导入路径(import path)
+## 导入路径(import path)
 
 在import package或使用go工具编译package的时候，需要指定package path。
 
@@ -77,10 +77,9 @@ $ export PATH=$PATH:$GOPATH/bin
 + 自己写的packages：导入路径不能和标准库或第三库的导入路径冲突，所以需要选择一个相对于$GOPATH/src的路径作为代码的package path。
 
 一般情况下将代码仓库的URL作为项目的base path，如 github.com/user。
-
 base path + package_name才是import使用的package path。
 
-# 开发程序
+## 开发程序
 
 1. 建立workspace，设置环境变量$GOPATH和$PATH:
 
@@ -88,30 +87,28 @@ base path + package_name才是import使用的package path。
   $ mkdir -p $HOME/go/{src,pkg,bin}
   $ export GOPATH=$HOME/go/
   $ export PATH=$GOPATH/bin:$PATH
+  $
   ```
 
-2. 设置一个base path，一般为代码仓库URL:
+1. 设置一个base path，一般为代码仓库URL:
 
   ```  bash
   $ mkdir -p $HOME/src/github.com/golang
+  $
   ```
 
-3. 在base path下面开发各个packages，每个package一个子目录
+1. 在base path下面开发各个packages，每个package一个子目录
 
   ``` bash
   $ mkdir -p $HOME/src/github.com/golang/{song,decode,encode,mixer}
+  $
   ```
-
-## 可执行程序
 
 例如：
 
 ``` bashsh
 $ mkdir $GOPATH/src/github.com/user/hello # hello main package
 $ cat $GOPATH/src/github.com/user/hello/hello.go
-```
-
-``` go
 package main
 
 import "fmt"
@@ -122,9 +119,10 @@ func main() {
 ```
 
 使用go工具来构建(build)和安装(install)该package：
-     
+
 ``` bash
 $ go install github.com/user/hello #第三个参数为package path
+$
 ```
 
 注意，可以在任何目录执行上面命令，go工具会在$GOPATH中的各workspace中查找上面的package path。还可以切换到package path目录，直接执行go install命令：
@@ -132,29 +130,31 @@ $ go install github.com/user/hello #第三个参数为package path
 ``` bash
 $ cd $GOPATH/src/github.com/user/hello
 $ go install
+$
 ```
 
 go install命令 先构建hello程序，然后安装到$GOPATH/bin目录中， 如果该目录在PATH中，则可以直接执行生成的命令：
 
 ``` bash
 $ hello
-Hello, world.
+Hello, world
+$.
 ```
 
-# 函数库
+## 开发Package
 
 开发函数库的方法和可执行程序类似，区别在于：
 
 1. package name不是main。
-2. go build不会生成任何文件，只做语法检查。
-3. go install会将构建的函数库安装到$GOPATH/pkg/$GOOS_GOARCH目录下相应的package path中。
+1. go build不会生成任何文件，只做语法检查。
+1. go install会将构建的函数库安装到$GOPATH/pkg/$GOOS_GOARCH目录下相应的package path中。
 
 如果package main的代码导入了该函数库package，那么：
 
 1. 执行 go build会在当前目录生成可执行程序，但不会安装函数库。
-2. 执行 go install会安装该可执行程序的同时安装它依赖的函数库。
+1. 执行 go install会安装该可执行程序的同时安装它依赖的函数库。
 
-# 包名称
+### 包名称
 
 每个package path下的所有go源文件只能属于一个package(用于测试的*_test.go源文件例外)。
 
@@ -173,7 +173,7 @@ golang的惯例是package name与该package所在的目录名称一致，即与p
 
 各packages可以含有相同的限定前缀，只要它们的import path(package path)不同即可。
 
-# 测试
+## 测试
 
 go test工具和testing package组成一个轻量级的测试框架。
 
@@ -205,14 +205,14 @@ for _, c := range cases {
 
 ``` go
 $ go test github.com/user/stringutil
-ok  	github.com/user/stringutil 0.165s
+ok  github.com/user/stringutil 0.165s
 ```
 
-# 远程包
+## 远程包
 
 如果代码中import path在当前workspace中不存在，则go工具会尝试利用git或hg从远程仓库下载。
 go get命令会自动下载、构建和安装相应仓库的packages， 默认会安装到$GOPATH中第一个workspace。
 
-# 参考
+参考
 
-1. (How to Write Go Code)[http://golang.org/doc/code.html]
+1. [How to Write Go Code](http://golang.org/doc/code.html)
