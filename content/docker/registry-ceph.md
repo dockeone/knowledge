@@ -181,7 +181,7 @@ grade performance slightly.
 
 # 创建 docker registry
 
-参考 《 docker/registry.md 》文档
+参考 docker 目录下的 [registry.md](../../docker/registry.md)
 
 # 给本地的一个image添加私有docker registry的tag
 

@@ -58,7 +58,7 @@ kube-proxy对经过NAT PREROUTING的package，在FILTER INPUT、FORWARD、OUTPUT
 1. Chain KUBE-SERVICES 会REJECT访问不存在 endpoints 的Service Cluster IP；
 
 
-docker 也会对iptables的filter和nat表进行管理，主要应用场景是hostPort端口映射的情况；详见 [docker的iptables.md](../docker/docker的iptables.md)
+docker会对**从Pod发出的请求做SNAT**，也会对iptables的filter和nat表进行管理，主要应用场景是hostPort端口映射的情况；详见 [docker的iptables.md](../docker/docker的iptables.md)
 
 # filter 表
 Chain INPUT (policy ACCEPT)

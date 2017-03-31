@@ -437,10 +437,12 @@ latest: Pulling from library/redis
 
 
 # 查询私有镜像中的images
+
 $ curl  --cacert /etc/docker/certs.d/10.64.3.7\:8000/ca.crt https://10.64.3.7:8000/v2/_catalog
 {"repositories":["library/redis","zhangjun3/busybox","zhangjun3/pause","zhangjun3/pause2"]}
 
 # 查询某个镜像的tags列表
+
 $ curl  --cacert /etc/docker/certs.d/10.64.3.7\:8000/ca.crt https://10.64.3.7:8000/v2/zhangjun3/busybox/tags/list
 {"name":"zhangjun3/busybox","tags":["latest"]}
 
@@ -542,9 +544,11 @@ $ curl -X DELETE  --cacert /etc/docker/certs.d/10.64.3.7\:8000/ca.crt https://10
 https://docs.docker.com/registry/garbage-collection/#why-garbage-collection
 
 ## Why Garbage Collection?
+
 Registry data can occupy considerable amounts of disk space and freeing up this disk space is an oft-requested feature. Additionally for reasons of security it can be desirable to ensure that certain layers no longer exist on the filesystem.
 
 ## Garbage Collection in the Registry
+
 Filesystem layers are stored by their content address in the Registry. This has many advantages, one of which is that data is **stored once and referred to by many manifests**. See here for more details.
 
 **Layers are therefore shared amongst manifests**; each manifest maintains a reference to the layer. As long as a layer is referenced by one manifest, it cannot be garbage collected.

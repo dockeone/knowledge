@@ -38,6 +38,8 @@ tcp        0      0 10.64.3.7:9128          0.0.0.0:*               LISTEN      
 
 # 添加的iptables如下
 
+## nat表
+
 $ iptables -nL -t nat
 Chain PREROUTING (policy ACCEPT)
 target     prot opt source               destination
@@ -52,36 +54,42 @@ DOCKER     all  --  0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst
 
 Chain POSTROUTING (policy ACCEPT)
 target     prot opt source               destination
+MASQUERADE  all  --  172.30.60.0/24       0.0.0.0/0             # 为所有来自PodIP请求做SNAT
+MASQUERADE  tcp  --  172.30.60.2          172.30.60.2          tcp dpt:9128     # Pod访问自身时做SNAT
 
 Chain DOCKER (2 references)
 target     prot opt source               destination
 RETURN     all  --  0.0.0.0/0            0.0.0.0/0
-DNAT       tcp  --  0.0.0.0/0            10.64.3.7            tcp dpt:9128 to:172.30.60.6:9128
+DNAT       tcp  --  0.0.0.0/0            10.64.3.7            tcp dpt:9128 to:172.30.60.2:9128   # 外界访问nodeIP:hostPort时，做DNAT；
+
+
+## forward表
 
 $ iptables -nL
 Chain INPUT (policy ACCEPT)
 target     prot opt source               destination
 
-Chain FORWARD (policy DROP)
+Chain FORWARD (policy ACCEPT)
 target     prot opt source               destination
 DOCKER-ISOLATION  all  --  0.0.0.0/0            0.0.0.0/0
 DOCKER     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
 
 Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination
 
 Chain DOCKER (1 references)
 target     prot opt source               destination
-ACCEPT     tcp  --  0.0.0.0/0            172.30.60.6          tcp dpt:9128
+ACCEPT     tcp  --  0.0.0.0/0            172.30.60.2          tcp dpt:9128
 
-Chain DOCKER-ISOLATION (1 references)
-target     prot opt source               destination
-RETURN     all  --  0.0.0.0/0            0.0.0.0/0
 
 # 创建的iptables如下
 
 nat表：
 
+1. **为所有从PodIP发出的请求做SNAT**；
 1. 只对访问nodeIP:hostPort的包做DNAT，映射到容器IP(Pod IP):Port，后续的filter表允许这个包FORWARD；
 
 filter表：

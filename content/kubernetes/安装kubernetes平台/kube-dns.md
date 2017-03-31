@@ -1,12 +1,14 @@
-[root@tjwq01-sys-bs003007 dns]# kubectl get svc --all-namespaces
+$ kubectl get svc --all-namespaces
 NAMESPACE     NAME         CLUSTER-IP   EXTERNAL-IP   PORT(S)         AGE
 default       kubernetes   10.254.0.1   <none>        443/TCP         86d
-[root@tjwq01-sys-bs003007 dns]# kubectl create -f skydns-svc.yaml
+
+$ kubectl create -f skydns-svc.yaml
 service "kube-dns" created
-[root@tjwq01-sys-bs003007 dns]# kubectl get svc --namespace=kube-system
+
+$ kubectl get svc --namespace=kube-system
 NAME       CLUSTER-IP   EXTERNAL-IP   PORT(S)         AGE
 kube-dns   10.254.0.2   <none>        53/UDP,53/TCP   35s
-[root@tjwq01-sys-bs003007 dns]# kubectl describe svc --namespace=kube-system
+$ kubectl describe svc --namespace=kube-system
 Name:                   kube-dns
 Namespace:              kube-system
 Labels:                 k8s-app=kube-dns
@@ -21,15 +23,16 @@ Port:                   dns-tcp 53/TCP
 Endpoints:              <none>
 Session Affinity:       None
 No events.
-[root@tjwq01-sys-bs003007 dns]# kubectl create -f skydns-rc.yaml
+
+$ kubectl create -f skydns-rc.yaml
 deployment "kube-dns" created
-[root@tjwq01-sys-bs003007 dns]# kubectl get deployment --namespace=kube-system
+$ kubectl get deployment --namespace=kube-system
 NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 kube-dns   1         1         1            1           8s
-[root@tjwq01-sys-bs003007 dns]# kubectl get pods --namespace=kube-system
+$ kubectl get pods --namespace=kube-system
 NAME                        READY     STATUS    RESTARTS   AGE
 kube-dns-2200864676-cs7ff   4/4       Running   0          11s
-[root@tjwq01-sys-bs003007 dns]# kubectl describe deployment kube-dns --namespace=kube-system
+$ kubectl describe deployment kube-dns --namespace=kube-system
 Name:                   kube-dns
 Namespace:              kube-system
 CreationTimestamp:      Mon, 13 Mar 2017 17:26:31 +0800
@@ -179,9 +182,9 @@ Events:
   41s           1s              10      {kubelet 127.0.0.1}     spec.containers{kubedns}                Warning         Unhealthy       Liveness probe failed: HTTP probe failed with statuscode: 503
 
 
-
 # kubedns的确没有起来
-[root@tjwq01-sys-bs003007 dns]# docker ps
+
+$ docker ps
 CONTAINER ID        IMAGE                                                        COMMAND                  CREATED             STATUS              PORTS               NAMES
 6d20d58bad76        ist0ne/exechealthz-amd64:1.2                                 "/exechealthz '--cmd="   29 minutes ago      Up 29 minutes                           k8s_healthz.3bde37ea_kube-dns-2200864676-cs7ff_kube-system_24fa1efd-07cf-11e7-8472-8cdcd4b3be48_19a06fd4
 3398103e3a76        ist0ne/dnsmasq-metrics-amd64:1.0                             "/dnsmasq-metrics --v"   29 minutes ago      Up 29 minutes                           k8s_dnsmasq-metrics.367b171c_kube-dns-2200864676-cs7ff_kube-system_24fa1efd-07cf-11e7-8472-8cdcd4b3be48_43c77b69
@@ -190,7 +193,8 @@ e1c36d118af1        nginx:1.7.9                                                 
 a483550bfae7        registry.access.redhat.com/rhel7/pod-infrastructure:latest   "/pod"                   4 hours ago         Up 4 hours                              k8s_POD.ae8ee9ac_ceph-pod2_default_28f1ba80-07b1-11e7-8472-8cdcd4b3be48_df3e6dd3
 
 # 原因是 kubedns通过443端口连接apiserver的secure port，但是serviceaccount没有ca文件，kubedns不能对apiserver的公钥进行验证
-[root@tjwq01-sys-bs003007 dns]# kubectl logs kube-dns-2200864676-cs7ff kubedns --namespace=kube-system|tail -4
+
+$ kubectl logs kube-dns-2200864676-cs7ff kubedns --namespace=kube-system|tail -4
 E0313 09:52:30.631501       1 reflector.go:199] pkg/dns/dns.go:148: Failed to list *api.Service: Get https://10.254.0.1:443/api/v1/services?resourceVersion=0: x509: failed to load system roots and no roots provided
 E0313 09:52:31.623087       1 reflector.go:199] pkg/dns/dns.go:145: Failed to list *api.Endpoints: Get https://10.254.0.1:443/api/v1/endpoints?resourceVersion=0: x509: failed to load system roots and no roots provided
 E0313 09:52:31.629979       1 reflector.go:199] pkg/dns/config/sync.go:114: Failed to list *api.ConfigMap: Get https://10.254.0.1:443/api/v1/namespaces/kube-system/configmaps?fieldSelector=metadata.name%3Dkube-dns&resourceVersion=0: x509: failed to load system roots and no roots provided
@@ -198,10 +202,11 @@ E0313 09:52:31.640905       1 reflector.go:199] pkg/dns/dns.go:148: Failed to li
 
 
 # 查看 kube-dns 的命令行参数
-[root@tjwq01-sys-bs003007 dns]# kubectl exec --namespace=kube-system  -i -t kube-dns-2200864676-cs7ff -c kubedns -- /kube-dns --help
+
+$ kubectl exec --namespace=kube-system  -i -t kube-dns-2200864676-cs7ff -c kubedns -- /kube-dns --help
 error: error executing remote command: error executing command in container: container not found ("kubedns")
 
-[root@tjwq01-sys-bs003007 dns]# docker run -it ist0ne/kubedns-amd64 kube-dns --help
+$ docker run -it ist0ne/kubedns-amd64 kube-dns --help
 Usage of /kube-dns:
       --alsologtostderr                  log to standard error as well as files
       --config-map string                config-map name. If empty, then the config-map will not used. Cannot be  used in conjunction with federations flag. config-map contains dynamically adjustable configuration.
@@ -223,30 +228,33 @@ Usage of /kube-dns:
 
 
 # 解决办法是：为apiserver、controller、kubelet重新生成ca证书、公私钥
-[root@tjwq01-sys-bs003007 ~]# curl -L -O https://storage.googleapis.com/kubernetes-release/easy-rsa/easy-rsa.tar.gz
-[root@tjwq01-sys-bs003007 ~]# mv easy-rsa.tar.gz ~/kube/
-[root@tjwq01-sys-bs003007 ~]# ls ~/kube/easy-rsa.tar.gz
+
+$ curl -L -O https://storage.googleapis.com/kubernetes-release/easy-rsa/easy-rsa.tar.gz
+$ mv easy-rsa.tar.gz ~/kube/
+$ ls ~/kube/easy-rsa.tar.gz
 /root/kube/easy-rsa.tar.gz
-[root@tjwq01-sys-bs003007 ~]# wget https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/v0.21.1/cluster/saltbase/salt/generate-cert/make-ca-cert.sh
-[root@tjwq01-sys-bs003007 ~]# chmod 775 make-ca-cert.sh
-[root@tjwq01-sys-bs003007 dns]# export CERT_DIR=/etc/kubernetes/ssl
+$ wget https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/v0.21.1/cluster/saltbase/salt/generate-cert/make-ca-cert.sh
+$ chmod 775 make-ca-cert.sh
+$ export CERT_DIR=/etc/kubernetes/ssl
 
 10.64.3.7为apiserver主机IP，后续为使用server.cert证书的IP和DNS列表，客户端在收到server发送的证书后，会检查server的ip或DNS是否位于指定的列表中，如果不在则拒绝server的证书并报错。
-[root@tjwq01-sys-bs003007 ~]# bash make-ca-cert.sh 10.64.3.7 IP:10.64.3.7,IP:10.0.0.1,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster.local
-[root@tjwq01-sys-bs003007 ~]# ls /etc/kubernetes/ssl/
+$ bash make-ca-cert.sh 10.64.3.7 IP:10.64.3.7,IP:10.0.0.1,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster.local
+$ ls /etc/kubernetes/ssl/
 ca.crt  kubecfg.crt  kubecfg.key  server.cert  server.key
 
 因为kubedns使用kubernetes服务名访问apiserver，所以必须修改上面的 10.0.0.1为 kubernetes service的cluster ip 10.254.0.1：
-[root@tjwq01-sys-bs003007 dns]# kubectl get services --all-namespaces
+
+$ kubectl get services --all-namespaces
 NAMESPACE     NAME         CLUSTER-IP   EXTERNAL-IP   PORT(S)         AGE
 default       kubernetes   10.254.0.1   <none>        443/TCP         87d
 
 否则kubedns容器启动后报错如下：
-[root@tjwq01-sys-bs003007 dns]# kubectl logs kube-dns-2200864676-bpgm2 -c kubedns --namespace=kube-system |tail -1
+
+$ kubectl logs kube-dns-2200864676-bpgm2 -c kubedns --namespace=kube-system |tail -1
 E0313 14:46:52.433533       1 reflector.go:199] pkg/dns/config/sync.go:114: Failed to list *api.ConfigMap: Get https://10.254.0.1:443/api/v1/namespaces/kube-system/configmaps?fieldSelector=metadata.name%3Dkube-dns&resourceVersion=0: x509: certificate is valid for 10.64.3.7, 10.64.3.7, 10.0.0.1, not 10.254.0.1
 
-[root@tjwq01-sys-bs003007 ~]# bash make-ca-cert.sh 10.64.3.7 IP:10.64.3.7,IP:10.254.0.1,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster.local
-[root@tjwq01-sys-bs003007 dns]# ls -l /etc/kubernetes/ssl
+$ bash make-ca-cert.sh 10.64.3.7 IP:10.64.3.7,IP:10.254.0.1,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster.local
+$ ls -l /etc/kubernetes/ssl
 total 28
 -rw------- 1 root root 1208 Mar 13 22:49 ca.crt
 -rw------- 1 root root 4458 Mar 13 22:49 kubecfg.crt
@@ -288,12 +296,12 @@ KUBELET_ARGS="--tls-cert-file=/etc/kubernetes/ssl/kubecfg.crt --tls-private-key-
 重启kubelet
 
 ## 创建kube-system namespace和kube-dns service
-[root@tjwq01-sys-bs003007 dns]# diff skydns-svc.yaml.in skydns-svc.yaml
+$ diff skydns-svc.yaml.in skydns-svc.yaml
 31c13
 <   clusterIP: {{ pillar['dns_server'] }}
 ---
 >   clusterIP: 10.254.0.2
-[root@tjwq01-sys-bs003007 dns]# cat skydns-svc.yaml
+$ cat skydns-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -314,20 +322,20 @@ spec:
   - name: dns-tcp
     port: 53
     protocol: TCP
-[root@tjwq01-sys-bs003007 dns]# kubectl create -f skydns-svc.yaml
+$ kubectl create -f skydns-svc.yaml
 上面命令会创建：
 1. kube-dns 命名空间；
 2. kube-dns命令空间对应的 default serviceaccount和token；
 
-[root@tjwq01-sys-bs003007 dns]# kubectl get namespaces
+$ kubectl get namespaces
 NAME          STATUS    AGE
 default       Active    87d
 kube-system   Active    1d
-[root@tjwq01-sys-bs003007 dns]# kubectl get serviceaccount --all-namespaces
+$ kubectl get serviceaccount --all-namespaces
 NAMESPACE     NAME      SECRETS   AGE
 default       default   1         35m
 kube-system   default   1         34m
-[root@tjwq01-sys-bs003007 dns]# kubectl describe serviceaccount default  --namespace=kube-system
+$ kubectl describe serviceaccount default  --namespace=kube-system
 Name:           default
 Namespace:      kube-system
 Labels:         <none>
@@ -337,10 +345,10 @@ Image pull secrets:     <none>
 Mountable secrets:      default-token-wqs8d
 
 Tokens:                 default-token-wqs8d
-[root@tjwq01-sys-bs003007 dns]# kubectl get secrets  --namespace=kube-system
+$ kubectl get secrets  --namespace=kube-system
 NAME                  TYPE                                  DATA      AGE
 default-token-wqs8d   kubernetes.io/service-account-token   3         36m
-[root@tjwq01-sys-bs003007 dns]# kubectl describe secrets  --namespace=kube-system
+$ kubectl describe secrets  --namespace=kube-system
 Name:           default-token-wqs8d
 Namespace:      kube-system
 Labels:         <none>
@@ -356,7 +364,7 @@ token:          eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3N
 ca.crt:         1208 bytes
 
 
-[root@tjwq01-sys-bs003007 dns]# diff skydns-rc.yaml.in skydns-rc.yaml|grep -v '#'
+$ diff skydns-rc.yaml.in skydns-rc.yaml|grep -v '#'
 51c27
 <         image: gcr.io/google_containers/kubedns-amd64:1.9
 ---
@@ -399,7 +407,7 @@ ca.crt:         1208 bytes
 注意：
 1. 由于gcr.io被墙，所以需要替换为 docker 的registery 仓库地址，这里使用ist0ne账户下的同名、同版本image；
 2. 为了加快镜像的下载速度，使用daocloud提供的加速器：
-[root@tjwq01-sys-bs003007 dns]# diff /etc/sysconfig/docker.orig /etc/sysconfig/docker
+$ diff /etc/sysconfig/docker.orig /etc/sysconfig/docker
 13c13
 < #ADD_REGISTRY='--add-registry registry.access.redhat.com'
 ---
@@ -408,11 +416,12 @@ ca.crt:         1208 bytes
 4. --domain=cluster.local. 注意最后面的点号，需要与kubelet的--cluster_domain参数一致；
 
 ## 创建kube-dns deployment
-[root@tjwq01-sys-bs003007 dns]# kubectl create -f skydns-rc.yaml
-[root@tjwq01-sys-bs003007 dns]# kubectl get deployment --all-namespaces
+
+$ kubectl create -f skydns-rc.yaml
+$ kubectl get deployment --all-namespaces
 NAMESPACE     NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 kube-system   kube-dns   1         1         1            1           52m
-[root@tjwq01-sys-bs003007 dns]# kubectl describe deployment kube-dns --namespace=kube-system
+$ kubectl describe deployment kube-dns --namespace=kube-system
 Name:                   kube-dns
 Namespace:              kube-system
 CreationTimestamp:      Mon, 13 Mar 2017 22:55:05 +0800
@@ -433,7 +442,7 @@ Events:
   FirstSeen     LastSeen        Count   From                            SubObjectPath   Type            Reason                  Message
   ---------     --------        -----   ----                            -------------   --------        ------                  -------
   52m           52m             1       {deployment-controller }                        Normal          ScalingReplicaSet       Scaled up replica set kube-dns-2200864676 to 1
-  [root@tjwq01-sys-bs003007 dns]# kubectl  get pods --namespace=kube-system
+  $ kubectl  get pods --namespace=kube-system
 NAME                        READY     STATUS    RESTARTS   AGE
 kube-dns-2200864676-p2zn6   4/4       Running   0          52m
 Name:           kube-dns-2200864676-p2zn6
@@ -562,7 +571,7 @@ Events:
   53m           53m             1       {kubelet 127.0.0.1}     spec.containers{dnsmasq-metrics}        Normal          Created         Created container with docker id 33f352447749
   53m           53m             1       {kubelet 127.0.0.1}     spec.containers{dnsmasq-metrics}        Normal          Started         Started container with docker id 33f352447749
 
-[root@tjwq01-sys-bs003007 dns]# kubectl logs kube-dns-2200864676-p2zn6 kubedns --namespace=kube-system
+$ kubectl logs kube-dns-2200864676-p2zn6 kubedns --namespace=kube-system
 I0313 14:55:06.794846       1 dns.go:42] version: v1.6.0-alpha.0.680+3872cb93abf948-dirty
 I0313 14:55:06.795276       1 server.go:107] Using https://10.254.0.1:443 for kubernetes master, kubernetes API: <nil>
 I0313 14:55:06.795830       1 server.go:68] Using configuration read from ConfigMap: kube-system:kube-dns
@@ -595,22 +604,22 @@ I0313 14:55:06.827631       1 server.go:131] Setting up cache handler (/cache)
 I0313 14:55:06.827637       1 server.go:120] Status HTTP port 8081
 
 root@tjwq01-sys-bs003007 dns]# curl 172.30.19.2:8080/healthz-dnsmasq   # 172.30.19.2 为 kube-dns pod的pod ip
-ok[root@tjwq01-sys-bs003007 dns]# curl 172.30.19.2:8081/healthz-dnsmasq
+ok$ curl 172.30.19.2:8081/healthz-dnsmasq
 404 page not found
 
 #测试 kubedns
 1. 新建一个Deployment
-[root@tjwq01-sys-bs003007 dns]# kubectl create -f my-nginx.yaml
+$ kubectl create -f my-nginx.yaml
 2. export该Deployment, 生成服务：
-[root@tjwq01-sys-bs003007 ~]# kubectl expose deploy my-nginx
-[root@tjwq01-sys-bs003007 ~]# kubectl get services --all-namespaces
+$ kubectl expose deploy my-nginx
+$ kubectl get services --all-namespaces
 NAMESPACE     NAME         CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE
 default       kubernetes   10.254.0.1     <none>        443/TCP         87d
 default       my-nginx     10.254.0.159   <none>        80/TCP          58m
 kube-system   kube-dns     10.254.0.2     <none>        53/UDP,53/TCP   1h
 3. 创建另一个pod，查看/etc/resolv.conf是否正确，是否能够解析 my-nginx:
-[root@tjwq01-sys-bs003007 ~]# kubectl create -f pod-nginx.yaml
-[root@tjwq01-sys-bs003007 ~]# kubectl exec -i -t nginx bash
+$ kubectl create -f pod-nginx.yaml
+$ kubectl exec -i -t nginx bash
 
 
 root@nginx:/# cat /etc/resolv.conf  # 可见，合并了kubedns和系统dns的配置(https://github.com/kubernetes/kubernetes/issues/41328)
