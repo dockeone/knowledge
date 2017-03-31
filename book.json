@@ -4,6 +4,7 @@
   "language": "zh-cn",
   "gitbook": "2.x.x",
   "plugins": [
+    "expandable-chapters",
     "atoc",
     "anchors",
     "disqus",
@@ -18,11 +19,12 @@
     "sitemap"
   ],
   "pluginsConfig": {
+    "expandable-chapters":{},
     "atoc":{
 	    "addClass": true,
 	    "className": "atoc"
     },
-    "disus": {
+    "disqus": {
       "shortName": "knowl"
     },
     "github": {
