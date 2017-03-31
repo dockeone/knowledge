@@ -4,7 +4,6 @@
   "language": "zh-cn",
   "plugins": [
     "expandable-chapters",
-    "etoc",
     "anchors",
     "disqus",
     "github",
@@ -16,7 +15,6 @@
     "splitter",
     "tbfed-pagefooter",
     "sitemap",
-    "anchor-navigation",
     "page-toc-button"
   ],
   "pluginsConfig": {
@@ -25,11 +23,7 @@
       "minTocSize": 2
    	},
     "expandable-chapters":{},
-    "etoc": {
-      "mindepth": 3,
-      "maxdepth": 4,
-      "notoc": false
-    },
+
     "disqus": {
       "shortName": "knowl"
     },
