@@ -4,8 +4,6 @@
   "language": "zh-cn",
   "gitbook": "2.x.x",
   "plugins": [
-    "expandable-chapters",
-    "anchors",
     "github",
     "editlink",
     "prism",
