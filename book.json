@@ -3,6 +3,7 @@
   "description": "张俊的个人知识库",
   "language": "zh-cn",
   "plugins": [
+    "expandable-chapters",
     "anchors",
     "disqus",
     "github",
@@ -17,8 +18,7 @@
     "page-toc-button",
     "image-captions",
     "page-footer-ex",
-    "tags",
-    "autotheme"
+    "tags"
   ],
   "pluginsConfig": {
     "image-captions": {
@@ -68,11 +68,6 @@
             "facebook", "google", "twitter",
             "weibo", "instapaper"
         ]
-    },
-    "autotheme": {
-        "white": [9, 10, 11, 12, 13, 14, 15, 16],
-        "sepia": [6, 7, 8, 17, 18, 19],
-        "night": [20, 21, 22, 23, 0, 1, 2, 3, 4, 5]
     }
   }
 }
