@@ -1,3 +1,5 @@
+<!-- toc -->
+
 # 安装dashboard
 
 $ cd /root/kubernetes/cluster/addons/dashboard
