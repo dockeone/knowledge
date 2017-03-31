@@ -2,14 +2,12 @@
   "title": "张俊的知识库",
   "description": "张俊的个人知识库",
   "language": "zh-cn",
-  "gitbook": "2.x.x",
   "plugins": [
     "github",
     "editlink",
     "prism",
     "-highlight",
     "baidu",
-    "ga",
     "splitter"
   ],
   "pluginsConfig": {
@@ -23,9 +21,6 @@
     },
     "baidu": {
         "token": "3a6c58f0013d3cc4ec3e56984c135511"
-    },
-    "ga": {
-        "token": "UA-79732341-1"
     }
   }
 }
