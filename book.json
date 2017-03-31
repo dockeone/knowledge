@@ -14,14 +14,14 @@
     "baidu",
     "ga",
     "splitter",
+    "page-toc",
     "tbfed-pagefooter",
     "sitemap"
   ],
   "pluginsConfig": {
     "expandable-chapters":{},
-    "atoc":{
-	    "addClass": true,
-	    "className": "atoc"
+    "page-toc": {
+        "position":"top"
     },
     "disqus": {
       "shortName": "knowl"
