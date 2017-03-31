@@ -1,0 +1,499 @@
+GoForGopher
+使用Go简单、可靠、高效地开发软件
+25 May 2016
+
+张俊
+北京金山云网络技术有限公司
+zhangjun3@kingsoft.com
+@geekard
+
+* 你好，Gopher！
+.image img/gophers.jpg _ 800
+
+* 内容提要：
+- Go诞生背景；
+- Go开发团队；
+- Go主要特性；
+- Go语言介绍；
+- Demo time！
+.image img/gopher.png
+
+* Go是什么？
+
+* Go是一种：
+
+    Go is a general-purpose language designed with systems programming in mind.
+
+    It is strongly typed and garbage-collected and has explicit support for concurrent programming.
+    Programs are constructed from packages, whose properties allow efficient management of
+    dependencies.
+    The existing implementations use a traditional compile/link model to generate executable
+    binaries.
+
+.link https://golang.org/ref/spec#Introduction https://golang.org/ref/spec#Introduction
+- 通用（系统编程In-Mind）
+- 强类型
+- 垃圾回收
+- 并发编程
+- 程序由package组成
+- 编译/链接
+语言。
+
+* 为什么要设计一个新语言呢？
+
+* Go诞生于深深挫败感之中
+
+Google遭遇了复杂性爆炸性增长的软件系统（非Google所独有）：
+
+- 机器规模大，软件规模大；
+- 主要使用C++开发服务器软件，少量使用java和python；
+- 数以千计的工程师；
+- 分布式build系统；
+- 海量的机器组成一些独立的计算集群；
+
+为了修复某个问题，一点点将系统某个部分变复杂，这不可避免地给其他部分增加了复杂性。
+
+总之，在Google，开发的软件规模非常大，开发进度慢，甚至笨拙！
+.link https://talks.golang.org/2012/splash.article Go at Google: Language Design in the Service of Software Engineering
+
+* 没有合适的现代化语言构建大规模软件系统
+
+计算领域发生了一些变化：
+
+- 硬件越来越快，但是软件开发的速度没有跟上；
+- Java、C++等静态语言的类型系统越来越复杂, 弱类型的Python、Javascript等语言流行起来；
+- 一些重要的特性如垃圾回收、并行计算，多核计算，传统语言支持的并不好；
+
+C++、Java语言等构建大规模软件系统的痛点：
+
+- 构建速度慢；
+- 依赖复杂；
+- 代码难读、难懂、注释和文档少；
+- 升级代价大；
+- 开发自动化工具难度大；
+.link https://golang.org/doc/faq What is the purpose of the project?
+
+* Let's GO!
+
+* 开发新的Go语言来解决这些痛点
+
+- 依赖管理要清晰、简单：抛弃传统包含头文件的方式；
+  package, ...
+- 必须弹性伸缩：大规模团队开发的包含大规模依赖的大规模程序；
+  remote package、interface&struct inheriting、go tools ...
+- 开发者友好：容易上手；(毕竟Googole开发者主要是C-like)；
+  C-like syntax, ...
+- 必须现代化：很好地支持多核、网络和Web应用程序；
+  channel、goroutine、net&http stdandard libraries, ...
+
+* Go Team
+.image img/authors.png _ 600
+
+- Ian Lance Taylor: GCC作者之一, Go新的编译器后端开发者；
+- Russ Cox: Plant9开发者，Go团队领导者；
+- Robert Griesemer: Google V8、Chubby和HotSpot JVM的主要贡献者；
+- Rob Pike: Unix、UTF-8、plan9的作者；
+- Ken Thompson: B语言、C语言的作者、Unix之父;
+- Brad Fitzpatrick: Memcache作者，Go的HTTP2库开发者；
+
+各个领域的顶尖牛人！站在巨人的肩膀上，走的更远！
+
+* Go 简史
+
+* Go 简史
+诞生于Google大规模软件开发的挫败感之中；
+
+- 2007年末开始设计；
+- 2009年11月开源；
+- 2012年3月发布1.0版本；
+- 当前版本是1.6；
+
+每半年发布一个新版本，后向兼容性保证：
+
+    What Go 1 defines and the backwards-compatibility guarantees one can expect as Go 1 matures.
+
+.link https://talks.golang.org/2015/how-go-was-made.slide how-go-was-made
+
+* Go 主要特性
+
+* Go 主要特性
+
+支持并发、垃圾回收、快速编译等特性的通用语言：
+
+- 快速编译：在普通电脑上编译一个大型Go程序只需几秒钟；
+- 代码组织方式：便于依赖分析的新的构建模型，同时避免C风格的头文件、库文件包含；
+- 类型系统：无继承的静态类型系统，比OO语言的类型系统更加轻量，有时有弱类型系统的感觉;
+  很多Gopher以前是Python开发者；
+- 垃圾回收，并发执行和通信；
+- 语言层面支持多核编程；
+
+* 并发并不是并行
+
+* 并发并不是并行
+
+- 并发(Concurrency)：
+  Programming as the composition of independently executing processes.
+  (Processes in the general sense, not Linux processes. Famously hard to define.)
+
+- 并行(Parallelism):
+  Programming as the simultaneous execution of (possibly related) computations.
+
+- 并发VS并行
+  - Concurrency is about dealing with lots of things at once.
+  - Parallelism is about doing lots of things at once.
+  - Not the same, but related.
+  - Concurrency is about structure, parallelism is about execution.
+  - Concurrency provides a way to structure a solution to solve a problem that may
+    (but not necessarily) be parallelizable.
+
+.link https://blog.golang.org/concurrency-is-not-parallelism https://blog.golang.org/concurrency-is-not-parallelism
+
+* 并发并不是并行
+示例：将一些过时的语言手册给烧了！
+.image img/book1.png _ 800
+如果是一个gopher干活的话，需要很长时间！
+
+* 并发并不是并行
+示例：将一些过时的语言手册给烧了！
+.image img/book2.png _ 700
+加一个gopher和小车，一起干活：
+
+- 一个书堆，一个火炉成瓶颈；
+- gopher间需要发消息同步进度；
+
+* 并发并不是并行
+示例：将一些过时的语言手册给烧了！
+.image img/book3.png _ 600
+
+将书分两堆，再加个火炉：
+
+- 两个gopher各自干各自的；
+- 烧书速度加倍！
+
+两只gopher并发干活，对于烧书这项工作来说是并行的；
+
+* 并发并不是并行
+示例：将一些过时的语言手册给烧了！
+.image img/book4.png _ 600
+
+另外一种烧书方式：
+- 3只gophers串行干活，无并发、无并行；
+
+* 并发并不是并行
+示例：将一些过时的语言手册给烧了！
+.image img/book5.png _ 600
+- 中间加一只gopher干活，引入了并发，但对于整个工作来说无并行；
+
+* 并发并不是并行
+示例：将一些过时的语言手册给烧了！
+.image img/book6.png _ 600
+
+- 再加一部分gohpers，将书分两堆分别烧，既并发又并行；
+
+* 并发并不是并行
+示例：将一些过时的语言手册给烧了！
+.image img/book7.png _ 600
+- 加更多的gophers，进一步提高并发和并行；
+
+* 主要应用场景
+
+* 主要应用场景
+
+- 服务器编程：用Go来高效完成以前C或者C++开发的软件，如文件系统、日志处理、多进程多线程程序；
+- 分布式系统、数据库代理：Etcd、Vitess等；
+- 网络编程：Go内置net/http包，可以加速Web应用、API应用、下载等应用开发；
+- 数据库：Tidb，Cockroachdb，Influxdb等；
+- 容器和微服务：Docker、k8s等；
+- 运维工具：日志分析、命令执行等日常工作；
+  我的实践：zbxcli、obms、checkRRD、FetchRRD、ksc-smpt、switchDiscovery、switchdBmDiscovery、...
+
+* Go正变得流行起来
+
+.caption 当今主要服务端开发语言Google趋势图 2010-2016
+.image img/trend.png _ 700
+python、golang等逐渐流行；php、java、c++等热度减少；
+.link https://www.google.com/trends/explore#q=python%2C%20%2Fm%2F09gbxjr%2C%20php%2C%20%2Fm%2F0jgqg%2C%20%2Fm%2F07sbkfb&date=1%2F2010%2073m&cmpt=q&tz=Etc%2FGMT-8 Google Trend
+
+* UseCase
+.image img/usecase.png _ 800
+
+* Go语言介绍
+- Go Tools工具：fmt、build、test、install、get、run
+- Go程序结构：package、import
+- Go数据类型：variable、constant、array、slice、map、channel、interface、pointer、struct
+- Go执行流程：for、if/else、switch、defer、range
+- Go并发：goroutine、channel
+- Go标准库：regexp、jsoon、flags、flags、os、logging、net/tcp、net/http
+
+
+* Go语言介绍: Go Tools
+
+- go doc | fmt | build | test | install | get | run
+
+  $ go get github.com/spf13/cobra
+  $ ls -ld ~/golang/src/github.com/spf13/cobra/
+  drwxr-xr-x 5 ksyun ksyun 4096 May  4 12:00 /home/ksyun/golang/src/github.com/spf13/cobra/
+
+  $ go build
+  $ ls -l obms
+  -rwxrwxr-x 1 ksyun ksyun 12025648 May 22 17:07 obms
+
+  $ go install
+  $ ls -l ~/golang/bin/obms
+  -rwxrwxr-x 1 ksyun ksyun 12025648 May 22 17:05 /home/ksyun/golang/bin/obms
+
+  $ ldd ~/golang/bin/obms
+  linux-vdso.so.1 =>  (0x00007ffe17774000)
+  libpthread.so.0 => /lib64/libpthread.so.0 (0x00007faecf5a5000)
+  libc.so.6 => /lib64/libc.so.6 (0x00007faecf211000)
+  /lib64/ld-linux-x86-64.so.2 (0x00007faecf7ce000)
+
+* Go语言介绍:
+Package:
+
+  package main
+  pckcage model
+
+Imports:
+
+  import "os"
+  import "git.op.ksyun.com/zhangjun3/obms/model"
+  import model "git.op.ksyun.com/zhangjun3/obms/model"
+  import . "git.op.ksyun.com/zhangjun3/obms/model"
+  import _ "github.com/go-sql-driver/mysql"
+
+* Go语言介绍
+Types:
+
+	bool byte complex64 complex128 error float32 float64
+	int int8 int16 int32 int64 rune string
+	uint uint8 uint16 uint32 uint64 uintptr
+
+Constants:
+
+  true false iota
+
+Zero value:
+
+  nil
+
+Functions:
+
+  append cap close complex copy delete imag len
+  make new panic print println real recover
+
+* Go语言介绍: hello, 世界！
+.play code/hello/hello.go
+
+  $go run hello.go
+  Hello, 世界!
+  $go build hello.go
+  $ls
+  hello  hello.go
+  $./hello
+  Hello, 世界!
+
+* Go语言介绍: go fmt
+.play code/http_post.go
+
+* Go语言介绍: go test
+.code code/divisionTest/division.go
+
+* Go语言介绍: go test
+.code code/divisionTest/division_test.go
+
+* Go语言介绍: go test
+
+  $go test
+  --- FAIL: Test_Division_2 (0.00s)
+  division_test.go:16: 就是不通过
+  FAIL
+  exit status 1
+  FAIL	git.op.ksyun.com/zhangjun3/docs/golang/golang-intro/code/divisionTest	0.011s
+
+  $go test -v
+  === RUN   Test_Division_1
+  --- PASS: Test_Division_1 (0.00s)
+  division_test.go:11: 第一个测试通过了
+  === RUN   Test_Division_2
+  --- FAIL: Test_Division_2 (0.00s)
+  division_test.go:16: 就是不通过
+  FAIL
+  exit status 1
+  FAIL	git.op.ksyun.com/zhangjun3/docs/golang/golang-intro/code/divisionTest	0.007s
+
+* Go语言介绍: go test -bench=.
+.code code/benchTest/fib.go
+
+* Go语言介绍: go test -bench=.
+.code code/benchTest/fib_test.go
+
+* Go语言介绍: go test -bench=.
+
+  $go test -bench=.
+  testing: warning: no tests to run
+  PASS
+  BenchmarkFib1-4 	1000000000	         2.57 ns/op
+  BenchmarkFib2-4 	300000000	         5.79 ns/op
+  BenchmarkFib3-4 	100000000	        10.4 ns/op
+  BenchmarkFib10-4	 5000000	       372 ns/op
+  BenchmarkFib20-4	   30000	     52124 ns/op
+  BenchmarkFib40-4	       2	 767435175 ns/op
+  ok  	git.op.ksyun.com/zhangjun3/docs/golang/golang-intro/code/benchTest
+  12.939s
+
+* Go语言介绍: go doc
+
+Go内置的文档查看工具：
+
+- 查看package的类型、常量、变量、函数、接口等文档；
+- 执行godoc -http=:8080命令可以查看golang.org的本地版本；
+
+  $godoc --help
+  usage: godoc package [name ...]
+  godoc -http=:6060
+
+
+* Go语言介绍: Variable
+.play code/variable.go
+
+* Go语言介绍: Constants
+.play code/constants.go
+
+* Go语言介绍: For
+.play code/for.go
+
+* Go语言介绍: If/Else
+.play code/ifelse.go
+
+* Go语言介绍: Switch
+.play code/switch.go
+
+* Go语言介绍: Array
+.play code/array.go
+
+* Go语言介绍: Slice
+.play code/slice.go
+
+* Go语言介绍: Maps
+.play code/map.go
+
+* Go语言介绍: Range
+.play code/range.go
+
+* Go语言介绍: Function
+.play code/function.go
+
+* Go语言介绍: Variadic Functions
+.play code/function-varadic.go
+
+* Go语言介绍: Closures
+.play code/closures.go
+
+* Go语言介绍: Pointer
+.play code/pointer.go
+
+* Go语言介绍: Structs
+.play code/structs.go
+
+* Go语言介绍: Methods
+.play code/methods.go
+
+* Go语言介绍: Interfaces
+.play code/interfaces.go
+
+* Go语言介绍: Errors
+.play code/errors.go
+
+* Go语言介绍: Goroutines
+.play code/goroutines.go
+
+* Go语言介绍: Channels
+.play code/channels.go
+
+* Go语言介绍: Worker Pools
+.play code/pool.go
+
+* Go语言介绍: Panic
+.play code/panic.go
+
+* Go语言介绍: Defer
+.play code/defer.go
+
+* Go语言介绍: Regexp
+.play code/regexp.go
+
+* Go语言介绍: JSON
+.play code/json.go
+
+* Go语言介绍: ReadFiles
+.play code/readfiles.go
+
+* Go语言介绍: WriteFiles
+.play code/writefiles.go
+
+* Go语言介绍: Command-Line Arguments
+.play code/args.go
+
+* Go语言介绍: Command-Line Flags
+.play code/flags.go
+
+* Go语言介绍: Environment Variables
+.play code/env.go
+
+* Go语言介绍: Spawning Processes
+.play code/command.go
+
+* Go语言介绍：Logging
+.play code/log.go
+
+* Go语言介绍: TCP Server
+.play code/tcp_server.go
+
+* Go语言介绍: TCP Server V2
+.play code/tcp_server_v2.go
+
+* Go语言介绍: TCP Client
+.play code/tcp_client.go
+
+* Go语言介绍: HTTP GET
+  resp, err := http.Get("http://example.com/")
+  ...
+  resp, err := http.Post("http://example.com/upload", "image/jpeg", &buf)
+  ...
+  resp, err := http.PostForm("http://example.com/form", url.Values{"key": {"Value"}, "id": {"123"}})
+
+.play code/http_get.go
+
+* Go语言介绍: HTTP POST
+.play code/http_post.go
+
+* Go语言介绍: HTTP Server
+.play code/http_server.go
+  http://127.0.0.1:8000/debug/pprof/
+
+* Go语言介绍: HTTP Server Benchmark
+.play code/httpGetBench/httpGet_test.go
+
+* 我的感受
+- 学习曲线平缓：C-like语法、内置GC和Go tools工具链；
+- 开发和运行效率高：类python的弱类型体验，接近C的运行效率；
+- 组合而非继承、无侵入式的接口：上下文关系简洁、清晰，心智负担很小；
+- 大而全的标准库：“自带电池”；
+- 部署方便：单二进制，COPY即部署；
+- 简单的并发：语言层次的goroutine和channel支持；
+- 稳定性：强大的编译时检查、严格的编码规范和完整的软件生命周期工具(go tools);
+
+Less is More !
+
+* 参考
+- Go语言规范：
+.link https://golang.org/ref/spec
+- Effective Go:
+.link https://golang.org/doc/effective_go.html
+- Go By Example:
+.link https://gobyexample.com/
+- building-web-apps-with-Go:
+.link http://codegangsta.gitbooks.io/building-web-apps-with-go/
+- Golang-nuts:
+.link https://groups.google.com/forum/#!forum/golang-nuts
