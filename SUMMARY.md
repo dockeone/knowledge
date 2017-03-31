@@ -32,3 +32,4 @@
 * [zabbix](zabbix/README.md)
   * [zabbix前端源码分析](zabbix/zabbix前端源码分析.md)
   * [zabbix 前端widget分析](zabbix/zabbix前端widget分析.md)
+* [标签集合](tags.md)

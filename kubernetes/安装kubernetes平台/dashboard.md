@@ -1,5 +1,7 @@
 <!-- toc -->
 
+tags: kubernetes, kube-dashboard
+
 # 安装dashboard
 
 $ cd /root/kubernetes/cluster/addons/dashboard

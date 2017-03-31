@@ -16,7 +16,8 @@
     "sitemap",
     "page-toc-button",
     "image-captions",
-    "page-footer"
+    "page-footer",
+    "tags"
   ],
   "pluginsConfig": {
     "image-captions": {
@@ -58,11 +59,10 @@
         "utcOffset": "8",
         "isShowQRCode": true,
         "baseUri": "http://knownl.opsnull.com",
-        "isShowIssues": true,
-        "repo": "opsnull/knowledge",
-        "issueNum": "4",
-        "token": "29a6890c958db8084055992ba72fa71b655fad77",
-        "style": "normal"
+        "isShowIssues": false
+    },
+    "tags": {
+        "placement": "bottom"
     }
   }
 }

@@ -1,5 +1,6 @@
-1. linkered 可以在每个pod中作为sidercar container部署，也可以通过DaemonSet的方式在每个Node上部署；
+tags: linkerd
 
+1. linkered 可以在每个pod中作为sidercar container部署，也可以通过DaemonSet的方式在每个Node上部署；
 
 # 在每个pod中作为sidercar container部署linkered
 
