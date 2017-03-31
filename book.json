@@ -6,7 +6,6 @@
   "plugins": [
     "expandable-chapters",
     "anchors",
-    "disqus",
     "github",
     "editlink",
     "prism",
@@ -20,9 +19,6 @@
   "pluginsConfig": {
     "expandable-chapters":{},
 
-    "disqus": {
-      "shortName": "knowl"
-    },
     "github": {
       "url": "https://github.com/opsnull/knowledge"
     },
