@@ -13,7 +13,6 @@
     "baidu",
     "ga",
     "splitter",
-    "tbfed-pagefooter",
     "sitemap"
   ],
   "pluginsConfig": {
@@ -32,11 +31,7 @@
     "ga": {
         "token": "UA-79732341-1"
     },
-    "tbfed-pagefooter":{
-        "copyright":"&copy zhangjun",
-        "modify_label": "修订时间：",
-        "modify_format": "YYYY-MM-DD HH:mm:ss"
-    },
+
     "sitemap": {
         "hostname": "http://knowl.opsnull.com"
     }
