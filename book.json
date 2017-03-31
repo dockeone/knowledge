@@ -18,7 +18,8 @@
     "page-toc-button",
     "image-captions",
     "page-footer-ex",
-    "tags"
+    "tags",
+    "multipart"
   ],
   "pluginsConfig": {
     "image-captions": {
