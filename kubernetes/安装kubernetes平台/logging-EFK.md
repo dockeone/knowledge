@@ -119,11 +119,6 @@ $  kubectl logs  elasticsearch-logging-v1-cm1xp -n kube-system -f
 [2017-03-26 15:00:34,763][INFO ][env                      ] [elasticsearch-logging-v1-cm1xp] heap size [989.8mb], compressed ordinary object pointers [true]
 [2017-03-26 15:00:40,078][INFO ][node                     ] [elasticsearch-logging-v1-cm1xp] initialized
 [2017-03-26 15:00:40,078][INFO ][node                     ] [elasticsearch-logging-v1-cm1xp] starting ...
-[2017-03-26 15:00:40,259][INFO ][transport                ] [elasticsearch-logging-v1-cm1xp] publish_address {172.30.19.11:9300}, bound_addresses {[::]:9300}
-[2017-03-26 15:00:40,263][INFO ][discovery                ] [elasticsearch-logging-v1-cm1xp] kubernetes-logging/S7rl46BRRV-12ypRiunovg
-[2017-03-26 15:00:43,345][INFO ][cluster.service          ] [elasticsearch-logging-v1-cm1xp] detected_master {elasticsearch-logging-v1-drc8d}{I5XXU5FHTOGO4gx7y_Wrvg}{172.30.19.10}{172.30.19.10:9300}{master=true}, added {{elasticsearch-logging-v1-drc8d}{I5XXU5FHTOGO4gx7y_Wrvg}{172.30.19.10}{172.30.19.10:9300}{master=true},}, reason: zen-disco-receive(from master [{elasticsearch-logging-v1-drc8d}{I5XXU5FHTOGO4gx7y_Wrvg}{172.30.19.10}{172.30.19.10:9300}{master=true}])
-[2017-03-26 15:00:43,455][INFO ][http                     ] [elasticsearch-logging-v1-cm1xp] publish_address {172.30.19.11:9200}, bound_addresses {[::]:9200}
-[2017-03-26 15:00:43,455][INFO ][node                     ] [elasticsearch-logging-v1-cm1xp] started
 
 创建 kibana
 $ kubectl create -f kibana-controller.yaml
