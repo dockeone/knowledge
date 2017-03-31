@@ -4,7 +4,7 @@
   "language": "zh-cn",
   "plugins": [
     "expandable-chapters",
-    "atoc",
+    "etoc",
     "anchors",
     "disqus",
     "github",
@@ -14,14 +14,15 @@
     "baidu",
     "ga",
     "splitter",
-    "page-toc",
     "tbfed-pagefooter",
     "sitemap"
   ],
   "pluginsConfig": {
     "expandable-chapters":{},
-    "page-toc": {
-        "position":"top"
+    "etoc": {
+      "mindepth": 3,
+      "maxdepth": 4,
+      "notoc": false
     },
     "disqus": {
       "shortName": "knowl"
