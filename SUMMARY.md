@@ -28,7 +28,7 @@
     * [容器性能指标采集](kubernetes/安装kubernetes平台/heapster.md)
     * [日志搜集、分析和可视化](kubernetes/安装kubernetes平台/logging-EFK.md)
     * [搭建私有ceph registry](docker/registry-ceph.md)
-* [linkerd](linkred/README.md)
+* [linkerd](linkerd/README.md)
 * [zabbix](zabbix/README.md)
   * [zabbix前端源码分析](zabbix/zabbix前端源码分析.md)
   * [zabbix 前端widget分析](zabbix/zabbix前端widget分析.md)
