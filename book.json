@@ -3,7 +3,6 @@
   "description": "张俊的个人知识库",
   "language": "zh-cn",
   "plugins": [
-    "expandable-chapters",
     "anchors",
     "disqus",
     "github",
