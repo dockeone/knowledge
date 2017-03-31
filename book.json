@@ -13,17 +13,21 @@
     "baidu",
     "ga",
     "splitter",
-    "tbfed-pagefooter",
     "sitemap",
-    "page-toc-button"
+    "page-toc-button",
+    "image-captions",
+    "page-footer"
   ],
   "pluginsConfig": {
+    "image-captions": {
+          "caption": "图片 - _CAPTION_"
+    },
     "page-toc-button": {
       "maxTocDepth": 2,
       "minTocSize": 2
    	},
-    "expandable-chapters":{},
-
+    "expandable-chapters":{
+    },
     "disqus": {
       "shortName": "knowl"
     },
@@ -40,13 +44,25 @@
     "ga": {
         "token": "UA-79732341-1"
     },
-    "tbfed-pagefooter":{
-        "copyright":"&copy zhangjun",
-        "modify_label": "修订时间：",
-        "modify_format": "YYYY-MM-DD HH:mm:ss"
-    },
     "sitemap": {
         "hostname": "http://knowl.opsnull.com"
+    },
+    "page-footer": {
+        "description": "更新时间：",
+        "signature": "zhangjun",
+        "wisdom": "Yet another hacker",
+        "format": "yyyy-MM-dd hh:mm:ss",
+        "copyright": "Copyright &#169; zhangjun",
+        "timeColor": "#666",
+        "copyrightColor": "#666",
+        "utcOffset": "8",
+        "isShowQRCode": true,
+        "baseUri": "http://knownl.opsnull.com",
+        "isShowIssues": true,
+        "repo": "opsnull/knowledge",
+        "issueNum": "4",
+        "token": "305142c1523369d947f98ec6f84ab56446e6004b",
+        "style": "normal"
     }
   }
 }
