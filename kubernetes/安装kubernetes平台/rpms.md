@@ -70,33 +70,3 @@ KUBE_MASTER="--master=http://10.64.3.7:8080"
 $ ls /etc/kubernetes/ssl/
 ca.crt  kubecfg.crt  kubecfg.key  server.cert  server.key
 ```
-
-各组件文档索引：
-
-[etcd](etcd.md)
-
-[kube-apiserver](kube-apiserver.md)
-
-[kubectl](kubectl.md)
-
-[kube-controller-manager](kube-controller-manager.md)
-
-[kube-scheduler](kube-scheduler.md)
-
-[flanneld](flanneld.md)
-
-[docker](docker.md)
-
-[kube-proxy](kube-proxy.md)
-
-[kubelet](kubelet.md)
-
-[kube-dns](kube-dns.md)
-
-[dashboard](dashboard.md)
-
-[容器性能指标采集](heapster.md)
-
-[日志搜集、分析和可视化](logging-EFK.md)
-
-[搭建私有ceph registry](../../docker/registry-ceph.md)
