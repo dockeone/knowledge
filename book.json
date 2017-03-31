@@ -13,11 +13,9 @@
     "baidu",
     "ga",
     "splitter",
-    "sitemap"
   ],
   "pluginsConfig": {
     "expandable-chapters":{},
-
     "github": {
       "url": "https://github.com/opsnull/knowledge"
     },
@@ -30,10 +28,6 @@
     },
     "ga": {
         "token": "UA-79732341-1"
-    },
-
-    "sitemap": {
-        "hostname": "http://knowl.opsnull.com"
     }
   }
 }
