@@ -8,9 +8,10 @@
     "disqus",
     "github",
     "editlink",
-    "prism",
-    "-highlight",
+    "prism", "-highlight",
+    "-lunr", "-search", "search-plus",
     "baidu",
+    "codesnippet",
     "ga",
     "splitter",
     "sitemap",
@@ -48,21 +49,25 @@
     "sitemap": {
         "hostname": "http://knowl.opsnull.com"
     },
-    "page-footer": {
-        "description": "更新时间：",
-        "signature": "zhangjun",
-        "wisdom": "Yet another hacker",
-        "format": "yyyy-MM-dd hh:mm:ss",
-        "copyright": "Copyright &#169; zhangjun",
-        "timeColor": "#666",
-        "copyrightColor": "#666",
-        "utcOffset": "8",
-        "isShowQRCode": true,
-        "baseUri": "http://knownl.opsnull.com",
-        "isShowIssues": false
+    "page-footer-ex":{
+        "copyright":"zhangjun",
+        "update_label":"最后更新：",
+        "update_format":"YYYY-MM-DD HH:mm:ss"
     },
     "tags": {
         "placement": "bottom"
+    },
+    "sharing": {
+        "facebook": true,
+        "twitter": true,
+        "google": true,
+        "weibo": true,
+        "instapaper": false,
+        "vk": false,
+        "all": [
+            "facebook", "google", "twitter",
+            "weibo", "instapaper"
+        ]
     }
   }
 }
