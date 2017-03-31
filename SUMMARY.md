@@ -1,13 +1,13 @@
-# SUMMARY
+# Summary
 
-[cassandra](cassandra)
+* [cassandra](cassandra/)
 
-[docker](docker)
+* [docker](docker/)
 
-[etcd](etcd)
+* [etcd](etcd/)
 
-[golang](golang)
+* [golang](golang/)
 
-[kubernetes](kubernetes)
+* [kubernetes](kubernetes/)
 
-[zabbix](zabbix)
+* [zabbix](zabbix/)

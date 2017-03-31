@@ -206,4 +206,4 @@ go get命令会自动下载、构建和安装相应仓库的packages， 默认�
 
 # 参考
 
-1. (How to Write Go Code)[http://golang.org/doc/code.html]
+1. [How to Write Go Code](http://golang.org/doc/code.html)
