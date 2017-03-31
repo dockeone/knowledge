@@ -1,3 +1,5 @@
+<!-- toc -->
+
 http://tonybai.com/2017/03/03/implement-kubernetes-cluster-level-logging-with-fluentd-and-elasticsearch-stack/
 
 $ pwd

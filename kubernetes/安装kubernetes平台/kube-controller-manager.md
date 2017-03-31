@@ -1,3 +1,5 @@
+<!-- toc -->
+
 ## 修改配置/etc/kubernetes/controller
 
 ``` bash
