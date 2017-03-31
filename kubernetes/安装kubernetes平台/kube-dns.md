@@ -1,3 +1,5 @@
+<!-- toc -->
+
 $ kubectl get svc --all-namespaces
 NAMESPACE     NAME         CLUSTER-IP   EXTERNAL-IP   PORT(S)         AGE
 default       kubernetes   10.254.0.1   <none>        443/TCP         86d

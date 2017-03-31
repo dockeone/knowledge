@@ -1,3 +1,5 @@
+<!-- toc -->
+
 # 安装相关RPMs
 
 配置docker repo

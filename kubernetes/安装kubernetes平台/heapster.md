@@ -1,3 +1,5 @@
+<!-- toc -->
+
 wget https://github.com/kubernetes/heapster/archive/v1.3.0.zip
 unzip v1.3.0.zip
 mv v1.3.0.zip heapster-1.3.0

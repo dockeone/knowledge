@@ -1,3 +1,5 @@
+<!-- toc -->
+
 # zabbix 前端widget分析
 ## 类层次关系
 class CAreaMap extends CTag

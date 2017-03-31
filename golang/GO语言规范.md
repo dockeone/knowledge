@@ -1,3 +1,5 @@
+<!-- toc -->
+
 # The Go Programming Language Specification
 
 # Introduction
