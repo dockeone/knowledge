@@ -1,0 +1,25 @@
+{
+  "title": "张俊的知识库",
+  "description": "张俊的个人知识库",
+  "language": "zh",
+  "plugins": [
+    "github",
+    "editlink",
+    "prism",
+    "-highlight",
+    "baidu",
+    "splitter"
+  ],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/opsnull/knowledge"
+    },
+    "editlink": {
+      "base": "https://github.com/opsnull/knowledge/blob/master/content",
+      "label": "编辑本页"
+    },
+    "baidu": {
+        "token": "3a6c58f0013d3cc4ec3e56984c135511"
+    }
+  }
+}
