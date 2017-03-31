@@ -15,9 +15,15 @@
     "ga",
     "splitter",
     "tbfed-pagefooter",
-    "sitemap"
+    "sitemap",
+    "anchor-navigation",
+    "page-toc-button"
   ],
   "pluginsConfig": {
+    "page-toc-button": {
+      "maxTocDepth": 2,
+      "minTocSize": 2
+   	},
     "expandable-chapters":{},
     "etoc": {
       "mindepth": 3,
