@@ -97,6 +97,6 @@ ca.crt  kubecfg.crt  kubecfg.key  server.cert  server.key
 
 [容器性能指标采集](heapster.md)
 
-[日志搜集、分析和可视化](logging-EFk.md)
+[日志搜集、分析和可视化](logging-EFK.md)
 
 [搭建私有ceph registry](../../docker/registry-ceph.md)
